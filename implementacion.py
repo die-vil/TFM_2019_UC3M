@@ -45,17 +45,6 @@ def ejecucion(casa, prices, start_train_date, start_date, end_date, ticker='GOOG
         return prices, prices_train, prices_test
 
 
-# Solo para el ordenador del curro que tiene problemas de proxies
-import requests
-proxies = {
-    'http': 'http://proxy.aacc.corp/index.pac',
-    'https': 'http://proxy.aacc.corp/index.pac',
-}
-
-with requests.Session() as s:
-    s.proxies.update(proxies)
-
-
 """
 =========================================================================================
 """
@@ -67,6 +56,7 @@ end_date = "2016-08-01"
 ticker='GOOGL'
 data_source='yahoo'
 
+# Code to scrap the companies of the SP500 tickers
 data = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
 table = data[0]
 table.head()
@@ -78,32 +68,33 @@ sliced_table = table[1:]
 tickers = sliced_table['Symbol'].tolist()
 sectors = sliced_table['GICS Sector'].unique().tolist()
 
-
-    tickers_sector1 = sliced_table[sliced_table['GICS Sector']==sectors[9]]['Symbol'].tolist()
-    #set empty list o hold the stock price DataFrames that we can later concatenate into a master frame
-    df_list = []
-    #not all stocks will return data so set up an empty list to store the stock tickers that actually successfully returns data
-    used_stocks = []
-    for stock in tickers_sector1:
-        try:
-            data = pd.DataFrame(wb.DataReader(stock, data_source=data_source, start=start_train_date, end=end_date)['Adj Close'])
-            print(stock)
-            data.columns = [stock]
-            df_list.append(data)
-            used_stocks.append(stock)
-        except:
-            print(stock, ' falló')
-            pass
-    #concatenate list of individual tciker price DataFrames into one master DataFrame
-    df = pd.concat(df_list,axis=1)
-    df.isnull().sum()
-    for column in df.columns:
-        if df[column].isnull().sum() > 20:
-            df.drop(column, axis=1, inplace=True)
-        else:
-            df[column].fillna(method='ffill')
-    df.isnull().sum()
-    df.to_pickle('consumer_staples_9.pkl') 
+# Code to scrap companies by sector
+sector_number = 
+tickers_sector1 = sliced_table[sliced_table['GICS Sector']==sectors[sector_number]]['Symbol'].tolist()
+#set empty list o hold the stock price DataFrames that we can later concatenate into a master frame
+df_list = []
+#not all stocks will return data so set up an empty list to store the stock tickers that actually successfully returns data
+used_stocks = []
+for stock in tickers_sector1:
+    try:
+        data = pd.DataFrame(wb.DataReader(stock, data_source=data_source, start=start_train_date, end=end_date)['Adj Close'])
+        print(stock)
+        data.columns = [stock]
+        df_list.append(data)
+        used_stocks.append(stock)
+    except:
+        print(stock, ' falló')
+        pass
+#concatenate list of individual tciker price DataFrames into one master DataFrame
+df = pd.concat(df_list,axis=1)
+df.isnull().sum()
+for column in df.columns:
+    if df[column].isnull().sum() > 20:
+        df.drop(column, axis=1, inplace=True)
+    else:
+        df[column].fillna(method='ffill')
+df.isnull().sum()
+df.to_pickle('consumer_staples_9.pkl') 
 df = pd.read_pickle('information_technology_1.pkl')
 
 #df = pd.read_pickle('health_care_0.pkl')
@@ -214,17 +205,9 @@ for archivo in archivos:
 """
 =========================================================================================
 """
-instrumentIds = ['SPY','AAPL','ADBE','SYMC','EBAY','MSFT','QCOM','HPQ','JNPR','AMD','IBM']
-etfs = ['IEI', 'TLT'] # este de momento el de referencia. La coint no es muy alta pero sale dpm
-etfs = ['AAPL', 'MSFT']
-etfs = ['EWA', 'EWC'] # a pesar de que tiene buena pinta meh
-etfs = ['PEP', 'KO'] #tiene buena pinta sin embargo no sale bien 
-etfs = ['JCOM', 'SIFY'] #tiene buena pinta sin embargo no sale bien 
 
 ticker_data = wb.DataReader(etfs, data_source=data_source, start=start_train_date, end=end_date) #portatil personal
 prices = ticker_data['Adj Close']
-
-etfs = ['FDX','ITW']
 prices = df[etfs]
 
 plt.plot(prices[etfs[0]], 'r-', label = etfs[0])
@@ -233,7 +216,6 @@ plt.title('Price evolution of two cointegrated pairs')
 plt.xlabel('Trading Day')
 plt.ylabel('Price')
 plt.legend(loc= "best")
-#plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\cointegration.png', bbox_inches='tight')
 plt.show()
 
 plt.plot(prices[etfs[1]] - prices[etfs[0]], 'b-',  label = 'Spread')
@@ -242,7 +224,6 @@ plt.title('Price evolution of the spread')
 plt.xlabel('Trading Day')
 plt.ylabel('Price')
 plt.legend(loc = 'best')
-plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\spread_cointegration.png', bbox_inches='tight')
 plt.show()
 
 
@@ -252,7 +233,6 @@ plt.axhline(puntuacion.mean())
 plt.axhline(1.0, color='red')
 plt.axhline(-1.0, color='green')
 plt.title('Zscore of the spread')
-#plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\zscore_spread_cointegration.png', bbox_inches='tight')
 plt.show()
 
 prices_train = prices.loc[start_train_date:start_date]
@@ -278,10 +258,6 @@ for pifia in fracasos:
 print('Dinero perdido: ', 100000*perdido)
 print('Profit: ' , 100000*ganado + 100000*perdido)
 
-
-etfs = ['FDX','ITW']
-etfs = ['ITW', 'IR']
-etfs = ['IEI', 'TLT']
 prices = df[etfs]
 prices_train = prices.loc[start_train_date:start_date]
 prices_train = prices_train.drop(prices_train.index[-1], axis = 0)
@@ -303,107 +279,3 @@ money_m, tlt_m, iei_m, e_m, movimientos_m, posicion_m, sqrs_Qt_m, state_mean_m, 
 daily_returns, Total_Return = returns(money_m, 1, 'si')
 Total_Return > 0.5
 ejecucion('si',prices, start_train_date, start_date, end_date, ticker='GOOGL', data_source='yahoo', etfs = etfs)
-
-
-
-# We extract the data
-ticker_data = wb.DataReader('IEI', 'yahoo', start_date, end_date, session=s) #portatil trabajo
-ticker_data = wb.DataReader('TLT', 'yahoo', start_date, end_date, session=s) #portatil trabajo
-ticker_data = pd.read_pickle(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\tfm\ultimos programas\tickers.pkl')
-ticker_data = wb.DataReader(etfs, data_source=data_source, start=start_train_date, end=end_date) #portatil personal
-ticker_data_train = wb.DataReader(etfs, data_source=data_source, start=start_train_date, end=start_date) #portatil personal
-
-prices = ticker_data['Adj Close']
-prices_train = ticker_data_train['Adj Close']
-prices_train = prices.loc[start_train_date:start_date]
-prices_train = prices_train.drop(prices_train.index[-1], axis = 0)
-prices_test = prices.loc[start_date:end_date]
-
-
-# Plot the prices
-draw_date_coloured_scatterplot(etfs, prices)
-# Visual check of cointegration
-visual_coint(prices_train[etfs[0]],prices_train[etfs[1]])
-visual_coint(prices_test[etfs[0]],prices_test[etfs[1]])
-
-
-# Visual check with zscore
-
-zscore(prices_train[etfs[0]]/prices_train[etfs[1]])
-
-
-
-
-
-# Cointegration test
-
-result = ts.coint(prices_train[etfs[0]],prices_train[etfs[1]]) # get conintegration
-print(result)
-pvalue = result[1] # get the pvalue
-print(pvalue)
-
-
-
-
-
-
-
-
-
-# Execution of the strategy
-
-prices_test.index = range(len(prices_test.index))
-
-prices_train.index = range(len(prices_train.index))
-
-money_m, tlt_m, iei_m, e_m, movimientos_m, posicion_m, sqrs_Qt_m, state_mean_m, state_cov = estrategia_manual(prices_test)
-
-#money_b, tlt_b, iei_b, e_b, movimientos_b, posicion_b, sqrs_Qt_b, state_mean_b  = estrategia_basica(prices_test, prices_train)
-
-money_b2, tlt_b2, iei_b2, e_b2, movimientos_b2, posicion_b2, sqrs_Qt_b2, state_mean_b2  = estrategia_basica_2(prices_test, prices_train)
-
-
-
-# Performance
-
-metricas(money_m, prices, movimientos_m)
-
-metricas(money_b2, prices, movimientos_b2)
-
-metrica_comparada(money_m, prices, movimientos_m, money_b2, movimientos_b2, 'si')
-
-
-
-
-
-# Calculate with the kalman filter the theta of the regression
-
-state_means, state_covs = calc_slope_intercept_kalman(etfs, prices, "alternativa")
-
-draw_slope_intercept_changes(prices, state_means)
-
-
-
-
-
-'''
-
-returnss, Total_Return = returns(money_m)
-
-mean_return, volatility = annual_volatility(returnss)
-
-mean_returns, volatilities = rolling_volatility(returnss)
-
-sharpe_ratio = sharpe_ratio(mean_return, volatility)
-
-sharpe_ratios = rolling_sharpe_ratio(mean_returns, volatilities)
-
-sortino_ratio = sortino_ratio(returnss)
-
-max_drawdown, position_min, position_max = max_drawdown(money_m)
-
-profit_long_trades, profit_short_trades, win_loss_ratio  = win_loss_ratio(movimientos_m, money_m)
-
-profitability, n_profitable_trades, n_nonprofit_trades = profitability(profit_long_trades,profit_short_trades)
-
-'''
