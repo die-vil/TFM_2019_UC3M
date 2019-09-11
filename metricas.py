@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jul 31 14:25:57 2019
-@author: x282066
-"""
+
 
 from __future__ import print_function
 import matplotlib.pyplot as plt
@@ -59,10 +55,6 @@ def metrica_comparada(money_m, prices, movimientos_m, money_b2, movimientos_b2, 
     plt.xlabel('Trading Day')
     plt.ylabel('Drawdown')
     plt.legend(loc= "best")
-    if casa!='si':
-        plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\daily_drawdown_mixed.png', bbox_inches='tight')
-    else:
-        plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\daily_drawdown_mixed.png', bbox_inches='tight')
     plt.show()
     profit_long_trades_m, profit_short_trades_m, WL_RATIO_m , profit_long_trades_b2, profit_short_trades_b2, WL_RATIO_b2 = win_loss_ratio(movimientos_m, money_m, movimientos_b2, money_b2)
     profitabilitY_m, n_profitable_trades_m, n_nonprofit_trades_m, number_trades_m, profitabilitY_b2, n_profitable_trades_b2, n_nonprofit_trades_b2, number_trades_b2 = profitability(profit_long_trades_m,profit_short_trades_m, profit_long_trades_b2, profit_short_trades_b2)
@@ -83,7 +75,6 @@ def spread(spread, variance):
     plt.title('Spread/Variance Evolution')
     plt.xlabel('Trading Day')
     plt.legend(loc= "best")
-    plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\spread.png', bbox_inches='tight')
     plt.show()
     
     plt.plot(spread/variance, 'b-', label = 'Spread')
@@ -91,7 +82,6 @@ def spread(spread, variance):
     plt.axhline(-1, color='red', linestyle='--') 
     plt.title('Spread Z-score Evolution')
     plt.xlabel('Trading Day')
-    plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\zscore.png', bbox_inches='tight')
     plt.show()
 
 def returns(money,plot, money2=1, casa='si'):
@@ -122,10 +112,6 @@ def returns(money,plot, money2=1, casa='si'):
         ax2.set_ylabel('Cumulative money €', color='b')
         plt.title('Performance of the strategy - Equity curve')
         plt.legend(loc= "best")
-        if casa != 'si':
-            plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\returns.png', bbox_inches='tight')
-        else:
-            plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\returns.png', bbox_inches='tight')
         plt.show()
         plt.plot(daily_returns, label = 'Kalman Filter')
         if money2 != 1:
@@ -133,10 +119,6 @@ def returns(money,plot, money2=1, casa='si'):
         plt.title('Daily Returns')
         plt.xlabel('Trading Day')
         plt.legend(loc= "best")
-        if casa != 'si':
-            plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\daily_returns.png', bbox_inches='tight')
-        else:
-            plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\daily_returns.png', bbox_inches='tight')
         plt.show()
     if money2 != 1:
         return daily_returns, Total_Return, daily_returns2, Total_Return2
@@ -176,10 +158,6 @@ def rolling_volatility(returns, plot, returns2=1, casa='si'):
         ax1.set_ylabel('Volatility')
         plt.title('1-Month Rolling Volatility')
         plt.legend(loc= "best")
-        if casa != 'si':
-            plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\rolling_returns.png', bbox_inches='tight')
-        else:
-            plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\rolling_returns.png', bbox_inches='tight')
         plt.show() 
     if returns2 != 1:
         return mean_returns, volatilities, mean_returns2, volatilities2
@@ -220,10 +198,6 @@ def rolling_sharpe_ratio(mean_returns, volatilities,plot, mean_returns2=1, volat
         ax1.set_ylabel('Sharpe Ratio')
         plt.title('1-Month Rolling Sharpe Ratio')
         plt.legend(loc= "best")
-        if casa!='si':
-            plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\rolling_sharpe_ratio.png', bbox_inches='tight')
-        else:
-            plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\rolling_sharpe_ratio.png', bbox_inches='tight')
         plt.show()
     if mean_returns2 !=1:
         return sharpe_ratios, sharpe_ratios2
@@ -267,10 +241,6 @@ def max_drawdown2(money,plot, money2 = 1, casa='si'):
         plt.xlabel('Accumulated Money')
         plt.legend( loc = "best")
         plt.grid()
-        if casa!='si':
-            plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\drawdown.png', bbox_inches='tight')
-        else:
-            plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\drawdown.png', bbox_inches='tight')
         plt.show()
     Max_Drawdown_Abs = round(money[i]-money[j]) 
     Max_Drawdown = round((money[i]-money[j])/money[j]*100)
@@ -298,10 +268,6 @@ def max_drawdown2(money,plot, money2 = 1, casa='si'):
             plt.xlabel('Accumulated Money')
             plt.legend( loc = "best")
             plt.grid()
-            if casa!='si':
-                plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\drawdown2.png', bbox_inches='tight')
-            else:
-                plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\drawdown2.png', bbox_inches='tight')
             plt.show()
         Max_Drawdown_Abs2 = round(money2[i]-money2[j]) 
         Max_Drawdown2 = round((money2[i]-money2[j])/money2[j]*100)
@@ -333,10 +299,6 @@ def daily_drawdown(money, position_min, prices, plot, casa='si'):
         plt.ylabel('Drawdown')
         plt.legend(loc= "best")
     
-        if casa!='si':
-            plt.savefig(r'C:\Users\x282066\OneDrive - Santander Office 365\Desktop\imagenes\daily_drawdown.png', bbox_inches='tight')
-        else:
-            plt.savefig(r'C:\Users\diego\Google Drive\UNIVERSIDAD\MASTER\uc3m\TFM\ultimo estado\ultimoestadoseguridad\imagenes\daily_drawdown.png', bbox_inches='tight')
         plt.show()
     return window, Daily_Drawdown
 
